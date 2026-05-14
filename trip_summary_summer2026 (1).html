@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Summer 2026 · Trip Summary</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --ink-muted: #666;
+    --ink-faint: #999;
+    --rule: #e0ddd8;
+    --surface: #f7f5f0;
+    --white: #ffffff;
+    --sq: #2563a8;
+    --ac: #c0392b;
+    --ua: #888780;
+    --accent: #2563a8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--surface); color: var(--ink); font-size: 14px; line-height: 1.6; padding: 2rem 1rem; }
+  .page { max-width: 720px; margin: 0 auto; background: var(--white); border: 1px solid var(--rule); }
+
+  /* Header */
+  .header { padding: 2.5rem 2.5rem 2rem; border-bottom: 1px solid var(--rule); display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; }
+  .header h1 { font-family: 'DM Serif Display', serif; font-size: 32px; font-weight: 400; line-height: 1.1; letter-spacing: -0.5px; }
+  .header h1 em { font-style: italic; color: var(--accent); }
+  .header p { margin-top: 6px; font-size: 13px; color: var(--ink-muted); font-weight: 300; }
+  .header-right { text-align: right; flex-shrink: 0; }
+  .nights-badge { font-family: 'DM Serif Display', serif; font-size: 48px; line-height: 1; color: var(--accent); }
+  .nights-label { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); margin-top: 2px; }
+
+  /* Outbound/return strip */
+  .flights-strip { padding: 1rem 2.5rem; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; gap: 6px; }
+  .strip-label { font-size: 10px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 4px; }
+  .strip-row { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+  .airline-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .strip-route { font-weight: 500; min-width: 240px; }
+  .strip-detail { color: var(--ink-muted); }
+  .strip-ref { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-faint); margin-left: auto; }
+
+  /* Legend */
+  .legend { display: flex; gap: 20px; padding: 0.75rem 2.5rem; border-bottom: 1px solid var(--rule); flex-wrap: wrap; align-items: center; background: var(--surface); }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--ink-muted); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* Country toggles */
+  .country { border-bottom: 1px solid var(--rule); }
+  .country:last-child { border-bottom: none; }
+  .country-header { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2.5rem; cursor: pointer; user-select: none; transition: background .15s; }
+  .country-header:hover { background: var(--surface); }
+  .country-header-left { display: flex; align-items: center; gap: 14px; }
+  .country-flag { font-size: 28px; line-height: 1; }
+  .country-name { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; }
+  .country-dates { font-size: 12px; color: var(--ink-muted); margin-top: 2px; }
+  .country-nights { font-size: 11px; color: var(--ink-muted); background: var(--surface); border: 1px solid var(--rule); padding: 3px 10px; border-radius: 20px; }
+  .toggle-icon { font-size: 10px; color: var(--ink-faint); transition: transform .2s; margin-left: 12px; }
+  .country.open > .country-header .toggle-icon { transform: rotate(180deg); }
+  .country-detail { display: none; border-top: 1px solid var(--rule); }
+  .country.open > .country-detail { display: block; }
+
+  /* Detail sections */
+  .detail-section { padding: 1.25rem 2.5rem; border-bottom: 1px solid var(--rule); }
+  .detail-section:last-child { border-bottom: none; }
+  .detail-label { font-size: 10px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+
+  /* Flight toggles */
+  .flight-toggle { border: 1px solid var(--rule); margin-bottom: 8px; background: var(--white); }
+  .flight-toggle:last-child { margin-bottom: 0; }
+  .flight-toggle-header { display: flex; align-items: center; gap: 10px; padding: 10px 14px; cursor: pointer; user-select: none; transition: background .15s; }
+  .flight-toggle-header:hover { background: var(--surface); }
+  .flight-toggle-header .airline-dot { flex-shrink: 0; }
+  .flight-toggle-route { font-size: 13px; font-weight: 500; flex: 1; }
+  .flight-toggle-summary { font-size: 11px; color: var(--ink-muted); }
+  .flight-toggle-ref { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-faint); }
+  .flight-toggle-icon { font-size: 9px; color: var(--ink-faint); transition: transform .2s; flex-shrink: 0; margin-left: 6px; }
+  .flight-toggle.open .flight-toggle-icon { transform: rotate(180deg); }
+
+  .flight-toggle-body { display: none; border-top: 1px solid var(--rule); padding: 12px 14px; background: var(--surface); }
+  .flight-toggle.open .flight-toggle-body { display: block; }
+
+  .flight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; font-size: 12px; margin-bottom: 10px; }
+  .flight-grid:last-child { margin-bottom: 0; }
+  .fg-label { font-size: 10px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 1px; }
+  .fg-value { font-weight: 500; color: var(--ink); }
+  .fg-value.mono { font-family: 'DM Mono', monospace; font-size: 11px; }
+
+  .flight-divider { border: none; border-top: 1px dashed var(--rule); margin: 10px 0; }
+
+  .connection-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; background: var(--white); border: 1px solid var(--rule); padding: 3px 10px; margin-bottom: 10px; }
+
+  /* Cards */
+  .detail-card { background: var(--white); border: 1px solid var(--rule); padding: 12px 16px; margin-bottom: 8px; }
+  .detail-card:last-child { margin-bottom: 0; }
+  .detail-card-title { font-weight: 500; font-size: 13px; margin-bottom: 4px; }
+  .detail-card-row { font-size: 12px; color: var(--ink-muted); margin-bottom: 2px; }
+  .detail-card-ref { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-faint); margin-top: 6px; }
+  .detail-card-link { font-size: 11px; color: var(--accent); text-decoration: none; display: inline-block; margin-top: 5px; }
+
+  /* Alerts */
+  .alert { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; font-size: 12px; margin-bottom: 8px; }
+  .alert:last-child { margin-bottom: 0; }
+  .alert-warn { background: #fffbf0; border-left: 3px solid #e8b84b; }
+  .alert-ok   { background: #f0faf4; border-left: 3px solid #4caf7d; }
+  .alert-info { background: #f0f6ff; border-left: 3px solid #2563a8; }
+  .alert-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+  .alert-text { color: var(--ink); line-height: 1.5; }
+  .alert-text strong { font-weight: 500; }
+
+  /* Events */
+  .event-row { display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--rule); font-size: 12px; }
+  .event-row:last-child { border-bottom: none; }
+  .event-flag { font-size: 15px; flex-shrink: 0; }
+  .event-date { font-weight: 500; min-width: 90px; flex-shrink: 0; }
+  .event-name { color: var(--ink-muted); }
+
+  .footer { padding: 1.25rem 2.5rem; background: var(--surface); border-top: 1px solid var(--rule); font-size: 11px; color: var(--ink-faint); display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div>
+      <h1>Summer 2026<br><em>SIN → LHR → BDA → SIN</em></h1>
+      <p>Liam Marriott · Anastasia Lau · Archer &nbsp;·&nbsp; 22 May – 19 Jun 2026</p>
+    </div>
+    <div class="header-right">
+      <div class="nights-badge">28</div>
+      <div class="nights-label">nights</div>
+    </div>
+  </div>
+
+  <div class="flights-strip">
+    <div class="strip-label">Outbound & return</div>
+    <div class="strip-row">
+      <span class="airline-dot" style="background:var(--sq)"></span>
+      <span class="strip-route">Singapore → London Heathrow</span>
+      <span class="strip-detail">SQ 322 · 22 May · 23:00 → 05:55+1</span>
+      <span class="strip-ref">D9LKT2</span>
+    </div>
+    <div class="strip-row">
+      <span class="airline-dot" style="background:var(--sq)"></span>
+      <span class="strip-route">London Heathrow → Singapore</span>
+      <span class="strip-detail">SQ 319 · 18 Jun · 20:35 → 16:45+1</span>
+      <span class="strip-ref">D9LKT2</span>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--sq)"></div>Singapore Airlines</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--ac)"></div>Air Canada</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--ua)"></div>United Airlines</div>
+  </div>
+
+  <!-- ====== UK ====== -->
+  <div class="country" id="uk">
+    <div class="country-header" onclick="toggleCountry('uk')">
+      <div class="country-header-left">
+        <span class="country-flag">🇬🇧</span>
+        <div>
+          <div class="country-name">United Kingdom</div>
+          <div class="country-dates">23–31 May · Northampton</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="country-nights">8 nights</span>
+        <span class="toggle-icon">▼</span>
+      </div>
+    </div>
+    <div class="country-detail">
+
+      <div class="detail-section">
+        <div class="detail-label">Flights</div>
+
+        <!-- Inbound: SIN→LHR -->
+        <div class="flight-toggle" id="f-sq322">
+          <div class="flight-toggle-header" onclick="toggleFlight('f-sq322')">
+            <span class="airline-dot" style="background:var(--sq)"></span>
+            <span class="flight-toggle-route">Singapore → London Heathrow</span>
+            <span class="flight-toggle-summary">SQ 322 · 22 May</span>
+            <span class="flight-toggle-ref">D9LKT2</span>
+            <span class="flight-toggle-icon">▼</span>
+          </div>
+          <div class="flight-toggle-body">
+            <div class="flight-grid">
+              <div><div class="fg-label">Flight</div><div class="fg-value">SQ 322</div></div>
+              <div><div class="fg-label">Date</div><div class="fg-value">Friday 22 May 2026</div></div>
+              <div><div class="fg-label">Departs</div><div class="fg-value">23:00 · Singapore Changi (SIN)</div></div>
+              <div><div class="fg-label">Arrives</div><div class="fg-value">05:55+1 · London Heathrow (LHR)</div></div>
+              <div><div class="fg-label">Airline</div><div class="fg-value">Singapore Airlines</div></div>
+              <div><div class="fg-label">Booking ref</div><div class="fg-value mono">D9LKT2</div></div>
+              <div><div class="fg-label">Passengers</div><div class="fg-value">Liam · Archer (infant)</div></div>
+              <div><div class="fg-label">Note</div><div class="fg-value">Anastasia flying separately to LHR</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Outbound: LHR→YHZ -->
+        <div class="flight-toggle" id="f-ac869">
+          <div class="flight-toggle-header" onclick="toggleFlight('f-ac869')">
+            <span class="airline-dot" style="background:var(--ac)"></span>
+            <span class="flight-toggle-route">London Heathrow → Halifax</span>
+            <span class="flight-toggle-summary">AC 869 · 31 May</span>
+            <span class="flight-toggle-ref">BMKVBS</span>
+            <span class="flight-toggle-icon">▼</span>
+          </div>
+          <div class="flight-toggle-body">
+            <div class="flight-grid">
+              <div><div class="fg-label">Flight</div><div class="fg-value">AC 869</div></div>
+              <div><div class="fg-label">Date</div><div class="fg-value">Sunday 31 May 2026</div></div>
+              <div><div class="fg-label">Departs</div><div class="fg-value">12:40 · London Heathrow (LHR)</div></div>
+              <div><div class="fg-label">Arrives</div><div class="fg-value">15:20 · Halifax Stanfield (YHZ)</div></div>
+              <div><div class="fg-label">Airline</div><div class="fg-value">Air Canada</div></div>
+              <div><div class="fg-label">Booking ref</div><div class="fg-value mono">BMKVBS</div></div>
+              <div><div class="fg-label">Passengers</div><div class="fg-value">Liam · Anastasia · Archer</div></div>
+              <div><div class="fg-label">Note</div><div class="fg-value">Drive Northampton → Heathrow that morning. Return SIXT car before check-in.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Accommodation</div>
+        <div class="detail-card">
+          <div class="detail-card-title">With family · Northampton</div>
+          <div class="detail-card-row">23–31 May · 8 nights</div>
+          <div class="detail-card-row">Drive Northampton → Heathrow Sun 31 May morning for 12:40 flight</div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Car rental</div>
+        <div class="detail-card">
+          <div class="detail-card-title">SIXT · Heathrow T2-T3</div>
+          <div class="detail-card-row">VW T-Roc · Pick-up 23 May 07:30 → Return 31 May</div>
+          <div class="detail-card-row">£320.94 at pickup + £300 deposit · No excess · Unlimited km</div>
+          <div class="detail-card-ref">Booking #9731525051</div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Events & holidays</div>
+        <div class="event-row">
+          <span class="event-flag">🇬🇧</span>
+          <span class="event-date">Mon 25 May</span>
+          <span class="event-name">Spring Bank Holiday — busy roads, some closures expected</span>
+        </div>
+        <div class="event-row">
+          <span class="event-flag">🏉</span>
+          <span class="event-date">Sat 30 May</span>
+          <span class="event-name">Northampton Saints vs Gloucester · 3pm · cinch Stadium at Franklin's Gardens</span>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Action items</div>
+        <div class="alert alert-warn"><span class="alert-icon">⚠</span><div class="alert-text"><strong>ESTA (Liam):</strong> Authorization pending · App# O1J4065T2612O31I · Must confirm before 22 May.</div></div>
+        <div class="alert alert-warn"><span class="alert-icon">⚠</span><div class="alert-text"><strong>DVLA check code:</strong> wZjFPzGX — case-sensitive, single use. Give to SIXT at pickup only. Valid until 4 Jun.</div></div>
+        <div class="alert alert-warn"><span class="alert-icon">⚠</span><div class="alert-text"><strong>Doctor's letter</strong> needed for carrying EpiPen on international flights.</div></div>
+        <div class="alert alert-ok"><span class="alert-icon">✓</span><div class="alert-text"><strong>EpiPen</strong> collected.</div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ====== CANADA ====== -->
+  <div class="country" id="canada">
+    <div class="country-header" onclick="toggleCountry('canada')">
+      <div class="country-header-left">
+        <span class="country-flag">🇨🇦</span>
+        <div>
+          <div class="country-name">Canada</div>
+          <div class="country-dates">31 May – 7 Jun · Halifax & Nova Scotia</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="country-nights">7 nights</span>
+        <span class="toggle-icon">▼</span>
+      </div>
+    </div>
+    <div class="country-detail">
+
+      <div class="detail-section">
+        <div class="detail-label">Flights</div>
+
+        <!-- Inbound: LHR→YHZ -->
+        <div class="flight-toggle" id="f-ac869b">
+          <div class="flight-toggle-header" onclick="toggleFlight('f-ac869b')">
+            <span class="airline-dot" style="background:var(--ac)"></span>
+            <span class="flight-toggle-route">London Heathrow → Halifax</span>
+            <span class="flight-toggle-summary">AC 869 · 31 May</span>
+            <span class="flight-toggle-ref">BMKVBS</span>
+            <span class="flight-toggle-icon">▼</span>
+          </div>
+          <div class="flight-toggle-body">
+            <div class="flight-grid">
+              <div><div class="fg-label">Flight</div><div class="fg-value">AC 869</div></div>
+              <div><div class="fg-label">Date</div><div class="fg-value">Sunday 31 May 2026</div></div>
+              <div><div class="fg-label">Departs</div><div class="fg-value">12:40 · London Heathrow (LHR)</div></div>
+              <div><div class="fg-label">Arrives</div><div class="fg-value">15:20 · Halifax Stanfield (YHZ)</div></div>
+              <div><div class="fg-label">Airline</div><div class="fg-value">Air Canada</div></div>
+              <div><div class="fg-label">Booking ref</div><div class="fg-value mono">BMKVBS</div></div>
+              <div><div class="fg-label">Passengers</div><div class="fg-value">Liam · Anastasia · Archer</div></div>
+              <div><div class="fg-label">Note</div><div class="fg-value">Car pick-up at 15:00 — tight. Call Dollar if delayed: +1-866-434-2226</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Outbound: YHZ→EWR→BDA -->
+        <div class="flight-toggle" id="f-ua3421">
+          <div class="flight-toggle-header" onclick="toggleFlight('f-ua3421')">
+            <span class="airline-dot" style="background:var(--ua)"></span>
+            <span class="flight-toggle-route">Halifax → Newark → Bermuda</span>
+            <span class="flight-toggle-summary">UA 3421 + UA 1985 · 7 Jun</span>
+            <span class="flight-toggle-ref">MWKWV7</span>
+            <span class="flight-toggle-icon">▼</span>
+          </div>
+          <div class="flight-toggle-body">
+            <div class="connection-badge">✈ Leg 1 of 2</div>
+            <div class="flight-grid">
+              <div><div class="fg-label">Flight</div><div class="fg-value">UA 3421</div></div>
+              <div><div class="fg-label">Date</div><div class="fg-value">Sunday 7 Jun 2026</div></div>
+              <div><div class="fg-label">Departs</div><div class="fg-value">07:00 · Halifax Stanfield (YHZ)</div></div>
+              <div><div class="fg-label">Arrives</div><div class="fg-value">08:18 · Newark (EWR)</div></div>
+              <div><div class="fg-label">Airline</div><div class="fg-value">United Airlines</div></div>
+              <div><div class="fg-label">Booking ref</div><div class="fg-value mono">MWKWV7</div></div>
+            </div>
+            <hr class="flight-divider">
+            <div class="connection-badge">✈ Leg 2 of 2 · Connection at Newark</div>
+            <div class="flight-grid">
+              <div><div class="fg-label">Flight</div><div class="fg-value">UA 1985</div></div>
+              <div><div class="fg-label">Date</div><div class="fg-value">Sunday 7 Jun 2026</div></div>
+              <div><div class="fg-label">Departs</div><div class="fg-value">10:21 · Newark (EWR)</div></div>
+              <div><div class="fg-label">Arrives</div><div class="fg-value">13:40 · Bermuda (BDA)</div></div>
+              <div><div class="fg-label">Airline</div><div class="fg-value">United Airlines</div></div>
+              <div><div class="fg-label">Connection time</div><div class="fg-value">2hr 03min at EWR</div></div>
+              <div><div class="fg-label">Passengers</div><div class="fg-value">Liam · Anastasia · Archer</div></div>
+              <div><div class="fg-label">Note</div><div class="fg-value">Early departure — staying at Hfx Airport Hotel the night before</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Accommodation</div>
+        <div class="detail-card">
+          <div class="detail-card-title">With family · Halifax</div>
+          <div class="detail-card-row">31 May – 2 Jun & 4–6 Jun</div>
+        </div>
+        <div class="detail-card" style="margin-top:8px">
+          <div class="detail-card-title">Airbnb · Lakeside Retreat with Hot Tub</div>
+          <div class="detail-card-row">Windsor, Nova Scotia (Falls Lake) · 2–4 Jun · ~1hr from Halifax</div>
+          <div class="detail-card-row">3 bed · 2 bath · lake access · dock · hot tub · fire pit · baby essentials</div>
+          <div class="detail-card-ref">airbnb.co.uk/rooms/32303611</div>
+        </div>
+        <div class="detail-card" style="margin-top:8px">
+          <div class="detail-card-title">Hfx Airport Hotel</div>
+          <div class="detail-card-row">60 Sky Blvd, Goffs NS · Check-in 6 Jun after 15:00 · Check-out 7 Jun before 12:00</div>
+          <div class="detail-card-row">Standard Room, 2 Queen Beds · Breakfast included 7 Jun · S$185.10 prepaid</div>
+          <div class="detail-card-ref">Booking #1578945876985592 · PIN 9977 · Free cancel before 15:00 on 3 Jun</div>
+          <a class="detail-card-link" href="https://www.google.com/maps/search/Hfx+Airport+Hotel+60+Sky+Blvd+Goffs+Nova+Scotia" target="_blank">↗ Google Maps</a>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Car rental</div>
+        <div class="detail-card">
+          <div class="detail-card-title">Dollar · 747 Bell Blvd, Goffs NS</div>
+          <div class="detail-card-row">Main driver: Anastasia Lau · Nissan Kicks · Auto</div>
+          <div class="detail-card-row">Pick-up 3PM 31 May → Drop-off 3PM 7 Jun</div>
+          <div class="detail-card-row">SGD 358.01 prepaid · CDW & theft excess ~CAD 671 · Full-to-full fuel</div>
+          <div class="detail-card-ref">Booking #1578945875074728 · Voucher L5483521333 · Free cancel before 3PM 29 May</div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Action items</div>
+        <div class="alert alert-warn"><span class="alert-icon">⚠</span><div class="alert-text"><strong>Anastasia must bring:</strong> Physical credit card (her name, chip + embossed), original driving licence, voucher (print or e-copy).</div></div>
+        <div class="alert alert-warn"><span class="alert-icon">⚠</span><div class="alert-text"><strong>Fuel:</strong> Refuel within 5km of drop-off (747 Bell Blvd). Keep receipt.</div></div>
+        <div class="alert alert-warn"><span class="alert-icon">⚠</span><div class="alert-text"><strong>Deposit:</strong> Rental fee + CAD 350 frozen on Anastasia's card for 30–60 days after return.</div></div>
+        <div class="alert alert-info"><span class="alert-icon">ℹ</span><div class="alert-text">Photograph car at pick-up and drop-off with timestamps enabled.</div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ====== BERMUDA ====== -->
+  <div class="country" id="bermuda">
+    <div class="country-header" onclick="toggleCountry('bermuda')">
+      <div class="country-header-left">
+        <span class="country-flag">🇧🇲</span>
+        <div>
+          <div class="country-name">Bermuda</div>
+          <div class="country-dates">7–17 Jun</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="country-nights">10 nights</span>
+        <span class="toggle-icon">▼</span>
+      </div>
+    </div>
+    <div class="country-detail">
+
+      <div class="detail-section">
+        <div class="detail-label">Flights</div>
+
+        <!-- Inbound: YHZ→EWR→BDA -->
+        <div class="flight-toggle" id="f-ua1985">
+          <div class="flight-toggle-header" onclick="toggleFlight('f-ua1985')">
+            <span class="airline-dot" style="background:var(--ua)"></span>
+            <span class="flight-toggle-route">Halifax → Newark → Bermuda</span>
+            <span class="flight-toggle-summary">UA 3421 + UA 1985 · 7 Jun</span>
+            <span class="flight-toggle-ref">MWKWV7</span>
+            <span class="flight-toggle-icon">▼</span>
+          </div>
+          <div class="flight-toggle-body">
+            <div class="connection-badge">✈ Leg 1 of 2</div>
+            <div class="flight-grid">
+              <div><div class="fg-label">Flight</div><div class="fg-value">UA 3421</div></div>
+              <div><div class="fg-label">Departs</div><div class="fg-value">07:00 · Halifax (YHZ)</div></div>
+              <div><div class="fg-label">Arrives</div><div class="fg-value">08:18 · Newark (EWR)</div></div>
+              <div><div class="fg-label">Booking ref</div><div class="fg-value mono">MWKWV7</div></div>
+            </div>
+            <hr class="flight-divider">
+            <div class="connection-badge">✈ Leg 2 of 2 · 2hr 03min connection at EWR</div>
+            <div class="flight-grid">
+              <div><div class="fg-label">Flight</div><div class="fg-value">UA 1985</div></div>
+              <div><div class="fg-label">Departs</div><div class="fg-value">10:21 · Newark (EWR)</div></div>
+              <div><div class="fg-label">Arrives</div><div class="fg-value">13:40 · Bermuda (BDA)</div></div>
+              <div><div class="fg-label">Booking ref</div><div class="fg-value mono">MWKWV7</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Outbound: BDA→YYZ→LHR -->
+        <div class="flight-toggle" id="f-ac1819">
+          <div class="flight-toggle-header" onclick="toggleFlight('f-ac1819')">
+            <span class="airline-dot" style="background:var(--ac)"></span>
+            <span class="flight-toggle-route">Bermuda → Toronto → London Heathrow</span>
+            <span class="flight-toggle-summary">AC 1819 + AC 854 · 17 Jun</span>
+            <span class="flight-toggle-ref">BMKVBS</span>
+            <span class="flight-toggle-icon">▼</span>
+          </div>
+          <div class="flight-toggle-body">
+            <div class="connection-badge">✈ Leg 1 of 2</div>
+            <div class="flight-grid">
+              <div><div class="fg-label">Flight</div><div class="fg-value">AC 1819</div></div>
+              <div><div class="fg-label">Date</div><div class="fg-value">Wednesday 17 Jun 2026</div></div>
+              <div><div class="fg-label">Departs</div><div class="fg-value">13:20 · Bermuda (BDA)</div></div>
+              <div><div class="fg-label">Arrives</div><div class="fg-value">15:20 · Toronto Pearson (YYZ)</div></div>
+              <div><div class="fg-label">Airline</div><div class="fg-value">Air Canada</div></div>
+              <div><div class="fg-label">Booking ref</div><div class="fg-value mono">BMKVBS</div></div>
+            </div>
+            <hr class="flight-divider">
+            <div class="connection-badge">✈ Leg 2 of 2 · Connection at Toronto</div>
+            <div class="flight-grid">
+              <div><div class="fg-label">Flight</div><div class="fg-value">AC 854</div></div>
+              <div><div class="fg-label">Departs</div><div class="fg-value">18:30 · Toronto Pearson (YYZ)</div></div>
+              <div><div class="fg-label">Arrives</div><div class="fg-value">06:35+1 · London Heathrow (LHR)</div></div>
+              <div><div class="fg-label">Connection time</div><div class="fg-value">3hr 10min at YYZ</div></div>
+              <div><div class="fg-label">Passengers</div><div class="fg-value">Liam · Anastasia · Archer</div></div>
+              <div><div class="fg-label">Note</div><div class="fg-value">Arrives Heathrow 06:35 on 18 Jun. Hilton Garden Inn day room booked.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Accommodation</div>
+        <div class="detail-card">
+          <div class="detail-card-title">With family & friends · Bermuda</div>
+          <div class="detail-card-row">7–17 Jun · 10 nights</div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Events & holidays</div>
+        <div class="event-row">
+          <span class="event-flag">🇧🇲</span>
+          <span class="event-date">Mon 15 Jun</span>
+          <span class="event-name">National Heroes Day — government & some businesses closed, local events likely</span>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Heathrow layover · 18 Jun</div>
+        <div class="detail-card">
+          <div class="detail-card-title">Hilton Garden Inn London Heathrow T2 & T3</div>
+          <div class="detail-card-row">Day Use · King Family Room · 2 adults + 1 child</div>
+          <div class="detail-card-row">Land 06:35 · Fly SQ 319 at 20:35 · £139.00 GBP · Tel: +44 20 3972 9700</div>
+          <div class="detail-card-ref">Confirmation #3442233939</div>
+          <a class="detail-card-link" href="https://www.google.com/maps/search/Hilton+Garden+Inn+London+Heathrow+Terminals+2+3" target="_blank">↗ Google Maps</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>Generated 14 May 2026</span>
+    <span>Liam Marriott · Anastasia Lau · Archer</span>
+  </div>
+
+</div>
+<script>
+function toggleCountry(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+function toggleFlight(id) {
+  event.stopPropagation();
+  document.getElementById(id).classList.toggle('open');
+}
+</script>
+</body>
+</html>
