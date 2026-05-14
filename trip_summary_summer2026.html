@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Summer 2026 · Trip Summary</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --ink-muted: #666;
+    --ink-faint: #999;
+    --rule: #e0ddd8;
+    --surface: #f7f5f0;
+    --white: #ffffff;
+    --sq: #2563a8;
+    --ac: #c0392b;
+    --ua: #888780;
+    --accent: #2563a8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 2rem 1rem;
+  }
+
+  .page {
+    max-width: 720px;
+    margin: 0 auto;
+    background: var(--white);
+    border: 1px solid var(--rule);
+  }
+
+  /* Header */
+  .header {
+    padding: 2.5rem 2.5rem 2rem;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+  }
+  .header-left h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    color: var(--ink);
+  }
+  .header-left h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .header-left p {
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--ink-muted);
+    font-weight: 300;
+  }
+  .header-right {
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .nights-badge {
+    font-family: 'DM Serif Display', serif;
+    font-size: 48px;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .nights-label {
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-top: 2px;
+  }
+
+  .section {
+    padding: 1.75rem 2.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .section:last-child { border-bottom: none; }
+
+  .section-title {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 1.25rem;
+  }
+
+  /* Flight rows */
+  .flight {
+    display: grid;
+    grid-template-columns: 90px 1fr auto;
+    align-items: start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .flight:last-child { border-bottom: none; }
+  .flight-date {
+    font-size: 12px;
+    color: var(--ink-muted);
+    font-weight: 300;
+    padding-top: 2px;
+  }
+  .flight-main {}
+  .flight-route {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .airline-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .flight-sub {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-top: 2px;
+    padding-left: 16px;
+  }
+  .flight-ref {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-align: right;
+    padding-top: 4px;
+  }
+
+  /* Stay bars */
+  .stay-bar {
+    background: var(--surface);
+    border-left: 3px solid var(--rule);
+    padding: 8px 12px;
+    margin: 6px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+  }
+  .stay-bar-label { color: var(--ink-muted); }
+  .stay-bar-detail { color: var(--ink-faint); font-size: 11px; text-align: right; }
+
+  /* Accommodation grid */
+  .accom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media(max-width: 500px) { .accom-grid { grid-template-columns: 1fr; } }
+  .accom-card {
+    border: 1px solid var(--rule);
+    padding: 14px 16px;
+  }
+  .accom-location {
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+  .accom-name {
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+  .accom-detail {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-bottom: 2px;
+  }
+  .accom-ref {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    margin-top: 6px;
+  }
+
+  /* Car rental */
+  .car-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media(max-width: 500px) { .car-grid { grid-template-columns: 1fr; } }
+  .car-card {
+    border: 1px solid var(--rule);
+    padding: 14px 16px;
+  }
+  .car-label {
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+  .car-name { font-weight: 500; font-size: 13px; margin-bottom: 4px; }
+  .car-detail { font-size: 12px; color: var(--ink-muted); margin-bottom: 2px; }
+  .car-ref { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-faint); margin-top: 6px; }
+
+  /* Alerts */
+  .alert-list { display: flex; flex-direction: column; gap: 8px; }
+  .alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    font-size: 12px;
+  }
+  .alert-warn { background: #fffbf0; border-left: 3px solid #e8b84b; }
+  .alert-ok { background: #f0faf4; border-left: 3px solid #4caf7d; }
+  .alert-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .alert-text { color: var(--ink); line-height: 1.5; }
+  .alert-text strong { font-weight: 500; }
+
+  /* Holidays */
+  .holiday-list { display: flex; flex-direction: column; gap: 8px; }
+  .holiday-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .holiday-row:last-child { border-bottom: none; }
+  .holiday-date { font-weight: 500; min-width: 100px; flex-shrink: 0; }
+  .holiday-name { color: var(--ink-muted); }
+  .holiday-flag { font-size: 16px; flex-shrink: 0; }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 20px;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--ink-muted); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* Footer */
+  .footer {
+    padding: 1.25rem 2.5rem;
+    background: var(--surface);
+    border-top: 1px solid var(--rule);
+    font-size: 11px;
+    color: var(--ink-faint);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border: 1px solid var(--rule);
+    color: var(--ink-faint);
+    margin-top: 4px;
+    font-family: 'DM Mono', monospace;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="header-left">
+      <h1>Summer 2026<br><em>SIN → LHR → BDA → SIN</em></h1>
+      <p>Liam Marriott · Anastasia Lau · Archer &nbsp;·&nbsp; 22 May – 19 Jun 2026</p>
+    </div>
+    <div class="header-right">
+      <div class="nights-badge">28</div>
+      <div class="nights-label">nights</div>
+    </div>
+  </div>
+
+  <!-- FLIGHTS -->
+  <div class="section">
+    <div class="section-title">Flights</div>
+
+    <div class="flight">
+      <div class="flight-date">22 May · Fri</div>
+      <div class="flight-main">
+        <div class="flight-route"><span class="airline-dot" style="background:var(--sq)"></span> Singapore → London Heathrow</div>
+        <div class="flight-sub">SQ 322 · 23:00 → 05:55+1</div>
+      </div>
+      <div class="flight-ref">D9LKT2</div>
+    </div>
+
+    <div class="stay-bar">
+      <span class="stay-bar-label">Northampton · 8 nights · with family</span>
+      <span class="stay-bar-detail">23–31 May</span>
+    </div>
+
+    <div class="flight">
+      <div class="flight-date">31 May · Sun</div>
+      <div class="flight-main">
+        <div class="flight-route"><span class="airline-dot" style="background:var(--ac)"></span> London Heathrow → Halifax</div>
+        <div class="flight-sub">AC 869 · 12:40 → 15:20</div>
+      </div>
+      <div class="flight-ref">BMKVBS</div>
+    </div>
+
+    <div class="stay-bar">
+      <span class="stay-bar-label">Halifax, Nova Scotia · 7 nights</span>
+      <span class="stay-bar-detail">31 May – 7 Jun</span>
+    </div>
+
+    <div class="flight">
+      <div class="flight-date">7 Jun · Sun</div>
+      <div class="flight-main">
+        <div class="flight-route"><span class="airline-dot" style="background:var(--ua)"></span> Halifax → Newark → Bermuda</div>
+        <div class="flight-sub">UA 3421 · 07:00 → 08:18 &nbsp;·&nbsp; UA 1985 · 10:21 → 13:40</div>
+      </div>
+      <div class="flight-ref">MWKWV7</div>
+    </div>
+
+    <div class="stay-bar">
+      <span class="stay-bar-label">Bermuda · 10 nights · with family & friends</span>
+      <span class="stay-bar-detail">7–17 Jun</span>
+    </div>
+
+    <div class="flight">
+      <div class="flight-date">17 Jun · Wed</div>
+      <div class="flight-main">
+        <div class="flight-route"><span class="airline-dot" style="background:var(--ac)"></span> Bermuda → Toronto → London Heathrow</div>
+        <div class="flight-sub">AC 1819 · 13:20 → 15:20 &nbsp;·&nbsp; AC 854 · 18:30 → 06:35+1</div>
+      </div>
+      <div class="flight-ref">BMKVBS</div>
+    </div>
+
+    <div class="stay-bar">
+      <span class="stay-bar-label">Heathrow · day use · Hilton Garden Inn T2&T3</span>
+      <span class="stay-bar-detail">18 Jun</span>
+    </div>
+
+    <div class="flight">
+      <div class="flight-date">18 Jun · Thu</div>
+      <div class="flight-main">
+        <div class="flight-route"><span class="airline-dot" style="background:var(--sq)"></span> London Heathrow → Singapore</div>
+        <div class="flight-sub">SQ 319 · 20:35 → 16:45+1</div>
+      </div>
+      <div class="flight-ref">D9LKT2</div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--sq)"></div> Singapore Airlines</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--ac)"></div> Air Canada</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--ua)"></div> United Airlines</div>
+    </div>
+  </div>
+
+  <!-- ACCOMMODATION -->
+  <div class="section">
+    <div class="section-title">Accommodation</div>
+    <div class="accom-grid">
+
+      <div class="accom-card">
+        <div class="accom-location">Northampton & London · 23–31 May</div>
+        <div class="accom-name">With family</div>
+        <div class="accom-detail">8 nights · based in Northampton</div>
+        <div class="accom-detail">🏉 Saints vs Gloucester · Sat 30 May, 3pm · Franklin's Gardens</div>
+      </div>
+
+      <div class="accom-card">
+        <div class="accom-location">Windsor, Nova Scotia · 2–4 Jun</div>
+        <div class="accom-name">Lakeside Retreat with Hot Tub</div>
+        <div class="accom-detail">Falls Lake · 3 bed · 2 bath · lake access</div>
+        <div class="accom-detail">Hot tub · fire pit · baby essentials</div>
+        <div class="accom-ref">airbnb.co.uk/rooms/32303611</div>
+      </div>
+
+      <div class="accom-card">
+        <div class="accom-location">Halifax Airport · 6–7 Jun</div>
+        <div class="accom-name">Hfx Airport Hotel</div>
+        <div class="accom-detail">60 Sky Blvd, Goffs NS · Standard, 2 Queen Beds</div>
+        <div class="accom-detail">Breakfast included 7 Jun · S$185.10 prepaid</div>
+        <div class="accom-ref">Bkg #1578945876985592 · PIN 9977</div>
+        <a href="https://www.google.com/maps/place/?q=place_id:ChIJCQeAmFiAWUsR7IIBAALpOak" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;display:inline-block;margin-top:6px;">↗ Google Maps</a>
+      </div>
+
+      <div class="accom-card">
+        <div class="accom-location">Heathrow · 18 Jun · Day Use</div>
+        <div class="accom-name">Hilton Garden Inn LHR T2 & T3</div>
+        <div class="accom-detail">King Family Room · 2 adults + 1 child</div>
+        <div class="accom-detail">Land 06:35 · Fly 20:35 · £139 GBP</div>
+        <div class="accom-ref">Conf #3442233939</div>
+        <a href="https://www.google.com/maps/place/?q=place_id:ChIJaYxB-WRzdkgR7R_87sRi4HA" target="_blank" style="font-size:11px;color:var(--accent);text-decoration:none;display:inline-block;margin-top:6px;">↗ Google Maps</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CAR RENTALS -->
+  <div class="section">
+    <div class="section-title">Car Rentals</div>
+    <div class="car-grid">
+
+      <div class="car-card">
+        <div class="car-label">United Kingdom</div>
+        <div class="car-name">SIXT · Heathrow T2-T3</div>
+        <div class="car-detail">VW T-Roc · 23 May 07:30 → 31 May</div>
+        <div class="car-detail">£320.94 at pickup + £300 deposit</div>
+        <div class="car-detail">No excess · unlimited km</div>
+        <div class="car-ref">Booking #9731525051</div>
+      </div>
+
+      <div class="car-card">
+        <div class="car-label">Halifax, Nova Scotia</div>
+        <div class="car-name">Dollar · Goffs NS</div>
+        <div class="car-detail">Nissan Kicks · Auto · Main driver: Anastasia</div>
+        <div class="car-detail">31 May 15:00 → 7 Jun 15:00 · SGD 358.01 prepaid</div>
+        <div class="car-detail">CDW excess ~CAD 671 · Full-to-full fuel</div>
+        <div class="car-ref">Bkg #1578945875074728 · Voucher L5483521333</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PUBLIC HOLIDAYS -->
+  <div class="section">
+    <div class="section-title">Public Holidays During Stay</div>
+    <div class="holiday-list">
+      <div class="holiday-row">
+        <div class="holiday-flag">🇬🇧</div>
+        <div class="holiday-date">Mon 25 May</div>
+        <div class="holiday-name">Spring Bank Holiday · UK — expect busy roads & some closures</div>
+      </div>
+      <div class="holiday-row">
+        <div class="holiday-flag">🇧🇲</div>
+        <div class="holiday-date">Mon 15 Jun</div>
+        <div class="holiday-name">National Heroes Day · Bermuda — government & some businesses closed, local events</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTION ITEMS -->
+  <div class="section">
+    <div class="section-title">Outstanding Items</div>
+    <div class="alert-list">
+      <div class="alert alert-warn">
+        <span class="alert-icon">⚠</span>
+        <div class="alert-text"><strong>ESTA (Liam only)</strong> — Authorization pending · App# O1J4065T2612O31I · Must confirm before 22 May departure</div>
+      </div>
+      <div class="alert alert-warn">
+        <span class="alert-icon">⚠</span>
+        <div class="alert-text"><strong>Doctor's letter</strong> — Required for carrying EpiPen on international flights</div>
+      </div>
+      <div class="alert alert-warn">
+        <span class="alert-icon">⚠</span>
+        <div class="alert-text"><strong>Halifax car · Anastasia must bring</strong> — Physical credit card (her name, chip + embossed number), original driving licence, and rental voucher (print or e-copy)</div>
+      </div>
+      <div class="alert alert-warn">
+        <span class="alert-icon">⚠</span>
+        <div class="alert-text"><strong>Halifax fuel</strong> — Full-to-full policy. Refuel within 5km of drop-off (747 Bell Blvd, Goffs). Keep receipt.</div>
+      </div>
+      <div class="alert alert-ok">
+        <span class="alert-icon">✓</span>
+        <div class="alert-text"><strong>EpiPen</strong> — Collected</div>
+      </div>
+      <div class="alert alert-ok">
+        <span class="alert-icon">✓</span>
+        <div class="alert-text"><strong>DVLA check code</strong> — wZjFPzGX (case-sensitive, single use — give to SIXT at pickup only, valid until 4 Jun)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>Generated 14 May 2026</span>
+    <span>Liam Marriott · Anastasia Lau · Archer</span>
+  </div>
+
+</div>
+</body>
+</html>
