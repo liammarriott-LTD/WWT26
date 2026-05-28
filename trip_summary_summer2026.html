@@ -22,7 +22,6 @@
   body { font-family: 'DM Sans', sans-serif; background: var(--surface); color: var(--ink); font-size: 14px; line-height: 1.6; padding: 2rem 1rem; }
   .page { max-width: 720px; margin: 0 auto; background: var(--white); border: 1px solid var(--rule); }
 
-  /* Header */
   .header { padding: 2.5rem 2.5rem 2rem; border-bottom: 1px solid var(--rule); display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; }
   .header h1 { font-family: 'DM Serif Display', serif; font-size: 32px; font-weight: 400; line-height: 1.1; letter-spacing: -0.5px; }
   .header h1 em { font-style: italic; color: var(--accent); }
@@ -31,7 +30,6 @@
   .nights-badge { font-family: 'DM Serif Display', serif; font-size: 48px; line-height: 1; color: var(--accent); }
   .nights-label { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); margin-top: 2px; }
 
-  /* Outbound/return strip */
   .flights-strip { padding: 1rem 2.5rem; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; gap: 6px; }
   .strip-label { font-size: 10px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 4px; }
   .strip-row { display: flex; align-items: center; gap: 10px; font-size: 12px; }
@@ -40,12 +38,10 @@
   .strip-detail { color: var(--ink-muted); }
   .strip-ref { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-faint); margin-left: auto; }
 
-  /* Legend */
   .legend { display: flex; gap: 20px; padding: 0.75rem 2.5rem; border-bottom: 1px solid var(--rule); flex-wrap: wrap; align-items: center; background: var(--surface); }
   .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--ink-muted); }
   .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
 
-  /* Country toggles */
   .country { border-bottom: 1px solid var(--rule); }
   .country:last-child { border-bottom: none; }
   .country-header { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2.5rem; cursor: pointer; user-select: none; transition: background .15s; }
@@ -60,23 +56,19 @@
   .country-detail { display: none; border-top: 1px solid var(--rule); }
   .country.open > .country-detail { display: block; }
 
-  /* Detail sections */
   .detail-section { padding: 1.25rem 2.5rem; border-bottom: 1px solid var(--rule); }
   .detail-section:last-child { border-bottom: none; }
   .detail-label { font-size: 10px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
 
-  /* Flight toggles */
   .flight-toggle { border: 1px solid var(--rule); margin-bottom: 8px; background: var(--white); }
   .flight-toggle:last-child { margin-bottom: 0; }
   .flight-toggle-header { display: flex; align-items: center; gap: 10px; padding: 10px 14px; cursor: pointer; user-select: none; transition: background .15s; }
   .flight-toggle-header:hover { background: var(--surface); }
-  .flight-toggle-header .airline-dot { flex-shrink: 0; }
   .flight-toggle-route { font-size: 13px; font-weight: 500; flex: 1; }
   .flight-toggle-summary { font-size: 11px; color: var(--ink-muted); }
   .flight-toggle-ref { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-faint); }
   .flight-toggle-icon { font-size: 9px; color: var(--ink-faint); transition: transform .2s; flex-shrink: 0; margin-left: 6px; }
   .flight-toggle.open .flight-toggle-icon { transform: rotate(180deg); }
-
   .flight-toggle-body { display: none; border-top: 1px solid var(--rule); padding: 12px 14px; background: var(--surface); }
   .flight-toggle.open .flight-toggle-body { display: block; }
 
@@ -85,12 +77,9 @@
   .fg-label { font-size: 10px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 1px; }
   .fg-value { font-weight: 500; color: var(--ink); }
   .fg-value.mono { font-family: 'DM Mono', monospace; font-size: 11px; }
-
   .flight-divider { border: none; border-top: 1px dashed var(--rule); margin: 10px 0; }
-
   .connection-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; background: var(--white); border: 1px solid var(--rule); padding: 3px 10px; margin-bottom: 10px; }
 
-  /* Cards */
   .detail-card { background: var(--white); border: 1px solid var(--rule); padding: 12px 16px; margin-bottom: 8px; }
   .detail-card:last-child { margin-bottom: 0; }
   .detail-card-title { font-weight: 500; font-size: 13px; margin-bottom: 4px; }
@@ -98,7 +87,6 @@
   .detail-card-ref { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-faint); margin-top: 6px; }
   .detail-card-link { font-size: 11px; color: var(--accent); text-decoration: none; display: inline-block; margin-top: 5px; }
 
-  /* Alerts */
   .alert { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; font-size: 12px; margin-bottom: 8px; }
   .alert:last-child { margin-bottom: 0; }
   .alert-warn { background: #fffbf0; border-left: 3px solid #e8b84b; }
@@ -108,7 +96,6 @@
   .alert-text { color: var(--ink); line-height: 1.5; }
   .alert-text strong { font-weight: 500; }
 
-  /* Events */
   .event-row { display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--rule); font-size: 12px; }
   .event-row:last-child { border-bottom: none; }
   .event-flag { font-size: 15px; flex-shrink: 0; }
@@ -154,7 +141,7 @@
     <div class="legend-item"><div class="legend-dot" style="background:var(--ua)"></div>United Airlines</div>
   </div>
 
-  <!-- ====== UK ====== -->
+  <!-- UK -->
   <div class="country" id="uk">
     <div class="country-header" onclick="toggleCountry('uk')">
       <div class="country-header-left">
@@ -173,8 +160,6 @@
 
       <div class="detail-section">
         <div class="detail-label">Flights</div>
-
-        <!-- Inbound: SIN→LHR -->
         <div class="flight-toggle" id="f-sq322">
           <div class="flight-toggle-header" onclick="toggleFlight('f-sq322')">
             <span class="airline-dot" style="background:var(--sq)"></span>
@@ -196,8 +181,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Outbound: LHR→YHZ -->
         <div class="flight-toggle" id="f-ac869">
           <div class="flight-toggle-header" onclick="toggleFlight('f-ac869')">
             <span class="airline-dot" style="background:var(--ac)"></span>
@@ -255,17 +238,18 @@
       </div>
 
       <div class="detail-section">
-        <div class="detail-label">Action items</div>
-        <div class="alert alert-warn"><span class="alert-icon">⚠</span><div class="alert-text"><strong>ESTA (Liam):</strong> Authorization pending · App# O1J4065T2612O31I · Must confirm before 22 May.</div></div>
+        <div class="detail-label">Documents & action items</div>
+        <div class="alert alert-ok"><span class="alert-icon">✓</span><div class="alert-text"><strong>ESTA (Liam):</strong> Approved · App# O1J4065T2612O31I</div></div>
+        <div class="alert alert-ok"><span class="alert-icon">✓</span><div class="alert-text"><strong>Canadian eTA (Liam):</strong> Approved · eTA# J535512018 · Expires 25 May 2031</div></div>
+        <div class="alert alert-ok"><span class="alert-icon">✓</span><div class="alert-text"><strong>EpiPen</strong> collected.</div></div>
         <div class="alert alert-warn"><span class="alert-icon">⚠</span><div class="alert-text"><strong>DVLA check code:</strong> wZjFPzGX — case-sensitive, single use. Give to SIXT at pickup only. Valid until 4 Jun.</div></div>
         <div class="alert alert-warn"><span class="alert-icon">⚠</span><div class="alert-text"><strong>Doctor's letter</strong> needed for carrying EpiPen on international flights.</div></div>
-        <div class="alert alert-ok"><span class="alert-icon">✓</span><div class="alert-text"><strong>EpiPen</strong> collected.</div></div>
       </div>
 
     </div>
   </div>
 
-  <!-- ====== CANADA ====== -->
+  <!-- CANADA -->
   <div class="country" id="canada">
     <div class="country-header" onclick="toggleCountry('canada')">
       <div class="country-header-left">
@@ -284,8 +268,6 @@
 
       <div class="detail-section">
         <div class="detail-label">Flights</div>
-
-        <!-- Inbound: LHR→YHZ -->
         <div class="flight-toggle" id="f-ac869b">
           <div class="flight-toggle-header" onclick="toggleFlight('f-ac869b')">
             <span class="airline-dot" style="background:var(--ac)"></span>
@@ -307,8 +289,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Outbound: YHZ→EWR→BDA -->
         <div class="flight-toggle" id="f-ua3421">
           <div class="flight-toggle-header" onclick="toggleFlight('f-ua3421')">
             <span class="airline-dot" style="background:var(--ua)"></span>
@@ -386,7 +366,7 @@
     </div>
   </div>
 
-  <!-- ====== BERMUDA ====== -->
+  <!-- BERMUDA -->
   <div class="country" id="bermuda">
     <div class="country-header" onclick="toggleCountry('bermuda')">
       <div class="country-header-left">
@@ -405,8 +385,6 @@
 
       <div class="detail-section">
         <div class="detail-label">Flights</div>
-
-        <!-- Inbound: YHZ→EWR→BDA -->
         <div class="flight-toggle" id="f-ua1985">
           <div class="flight-toggle-header" onclick="toggleFlight('f-ua1985')">
             <span class="airline-dot" style="background:var(--ua)"></span>
@@ -433,8 +411,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Outbound: BDA→YYZ→LHR -->
         <div class="flight-toggle" id="f-ac1819">
           <div class="flight-toggle-header" onclick="toggleFlight('f-ac1819')">
             <span class="airline-dot" style="background:var(--ac)"></span>
@@ -499,7 +475,7 @@
   </div>
 
   <div class="footer">
-    <span>Generated 14 May 2026</span>
+    <span>Updated 27 May 2026</span>
     <span>Liam Marriott · Anastasia Lau · Archer</span>
   </div>
 
